@@ -54,13 +54,13 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _game = __webpack_require__(159);
+	var _Game = __webpack_require__(159);
 
-	var _game2 = _interopRequireDefault(_game);
+	var _Game2 = _interopRequireDefault(_Game);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	_reactDom2.default.render(_react2.default.createElement(_game2.default, null), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(_Game2.default, null), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -19776,6 +19776,10 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
+	var _Square = __webpack_require__(160);
+
+	var _Square2 = _interopRequireDefault(_Square);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19784,6 +19788,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	//NEED TO RENAME LiveSquare and DeadSquare BELOW
+
 	//  create function to generate a random array?(LATER)
 	//  create listener on each square to toggle from dead to alive
 	//  means have to change it's associated value in the state array
@@ -19791,25 +19797,12 @@
 	//and create the new array value, then set the new array(s) to state.
 
 
-	var LiveSquare = function LiveSquare() {
-	  return _react2.default.createElement('div', { className: 'grid-square live' });
-	};
-
-	var DeadSquare = function DeadSquare() {
-	  return _react2.default.createElement('div', { className: 'grid-square dead' });
-	};
-
 	var Row = function Row(props) {
-	  var createSquare = function createSquare(value) {
-	    if (value === 0) {
-	      return _react2.default.createElement(DeadSquare, null);
-	    } else return _react2.default.createElement(LiveSquare, null);
-	  };
 	  return _react2.default.createElement(
 	    'div',
 	    { className: 'rows' },
 	    props.rowData.map(function (value) {
-	      return createSquare(value);
+	      return _react2.default.createElement(_Square2.default, { val: value });
 	    })
 	  );
 	};
@@ -19876,6 +19869,44 @@
 	}(_react2.default.Component);
 
 	exports.default = Game;
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Square = function Square(props) {
+	  function createSquare() {
+	    if (props.val === 0) {
+	      return _react2.default.createElement('div', { className: 'grid-square dead' });
+	    } else {
+	      return _react2.default.createElement('div', { className: 'grid-square live' });
+	    }
+	  }
+
+	  return _react2.default.createElement(
+	    'span',
+	    null,
+	    createSquare()
+	  );
+	};
+
+	exports.default = Square;
 
 /***/ }
 /******/ ]);

@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import Square from './Square';
+
+//NEED TO RENAME LiveSquare and DeadSquare BELOW
 
 //  create function to generate a random array?(LATER)
 //  create listener on each square to toggle from dead to alive
@@ -8,29 +11,12 @@ import ReactDOM from 'react-dom';
   //and create the new array value, then set the new array(s) to state.
 
 
-const LiveSquare = () => {
-  return (
-    <div className="grid-square live">
-  </div>
-  );
-}
 
-const DeadSquare = () => {
-  return (
-    <div className="grid-square dead">
-  </div>
-  );
-}
 
 const Row = (props) => {
-  var createSquare = function (value) {
-   if (value === 0) {
-     return <DeadSquare/>;
-   } else return <LiveSquare/>
-}
   return (
     <div className="rows">
-      {props.rowData.map(value => createSquare(value))}
+      {props.rowData.map(value => <Square val={value}/>)}
     </div>
   )
 }
