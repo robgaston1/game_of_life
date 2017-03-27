@@ -19776,9 +19776,9 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _Square = __webpack_require__(160);
+	var _Board = __webpack_require__(161);
 
-	var _Square2 = _interopRequireDefault(_Square);
+	var _Board2 = _interopRequireDefault(_Board);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19787,35 +19787,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	//NEED TO RENAME LiveSquare and DeadSquare BELOW
-
-	//  create function to generate a random array?(LATER)
-	//  create listener on each square to toggle from dead to alive
-	//  means have to change it's associated value in the state array
-	//  write the function to check for neighbors on each array value
-	//and create the new array value, then set the new array(s) to state.
-
-
-	var Row = function Row(props) {
-	  return _react2.default.createElement(
-	    'div',
-	    { className: 'rows' },
-	    props.rowData.map(function (value) {
-	      return _react2.default.createElement(_Square2.default, { val: value });
-	    })
-	  );
-	};
-
-	var Board = function Board(props) {
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    props.life.map(function (array) {
-	      return _react2.default.createElement(Row, { rowData: array });
-	    })
-	  );
-	};
 
 	var Game = function (_React$Component) {
 	  _inherits(Game, _React$Component);
@@ -19826,40 +19797,89 @@
 	    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
 	    var generateLife = function generateLife() {
-	      return [[0, 1, 0, 1, 1], [1, 1, 1, 0, 0], [0, 1, 0, 1, 0], [1, 0, 1, 0, 1]];
+	      //create a function under generateLife that will
+	      return [[0, 1, 0, 1, 0, 0, 1, 0], [1, 0, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0], [0, 1, 0, 1, 1, 0, 1, 0], [1, 1, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 1, 1], [1, 0, 1, 0, 1, 0, 1, 0]];
 	    };
 	    _this.state = {
 	      life: generateLife()
 	    };
-	    _this.cycle = _this.cycle.bind(_this);
+	    _this.iterateCells = _this.iterateCells.bind(_this);
 	    _this.checkNeighbors = _this.checkNeighbors.bind(_this);
+	    _this.startCycle = _this.startCycle.bind(_this);
+	    _this.stopCycle = _this.stopCycle.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(Game, [{
-	    key: 'cycle',
-	    value: function cycle() {
-	      var that = this;
-	      var timer = setInterval(function () {
-	        that.checkNeighbors();
-	      }, 1000);
+	    key: 'startCycle',
+	    value: function startCycle() {
+	      var intervalId = setInterval(this.iterateCells, 300);
+	      this.setState({ intervalId: intervalId });
+	    }
+	  }, {
+	    key: 'stopCycle',
+	    value: function stopCycle() {
+	      clearInterval(this.state.intervalId);
 	    }
 	  }, {
 	    key: 'checkNeighbors',
-	    value: function checkNeighbors() {
-	      console.log(this.state.life);
+	    value: function checkNeighbors(cellX, cellY) {
+	      var that = this;
+	      var acc = 0;
+	      var coordinates = [[-1, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1]];
+	      var neighbors = coordinates.forEach(function (coords) {
+	        var neighborX = cellX + coords[0];
+	        var neighborY = cellY + coords[1];
+	        if (neighborX >= 0 && neighborY >= 0 && neighborY < that.state.life.length) {
+	          var neighborCoord = that.state.life[neighborY][neighborX];
+	          if (neighborCoord !== 'undefined' && neighborCoord === 1) {
+	            acc++;
+	          }
+	        }
+	      });
+	      return acc;
+	    }
+	  }, {
+	    key: 'iterateCells',
+	    value: function iterateCells() {
+	      var boardArray = this.state.life;
+	      for (var i = 0; i < boardArray.length; i++) {
+	        for (var j = 0; j < boardArray[i].length; j++) {
+	          var amtNeighbors = this.checkNeighbors(j, i);
+	          if (boardArray[i][j] === 0 && amtNeighbors === 3) {
+	            boardArray[i][j] = 1;
+	          } else if (boardArray[i][j] === 1 && (amtNeighbors < 2 || amtNeighbors > 3)) {
+	            boardArray[i][j] = 0;
+	          }
+	        }
+	      }
+	      this.setState({ life: boardArray });
+	    }
+	  }, {
+	    key: 'changeSquare',
+	    value: function changeSquare(e) {
+	      console.log(e);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container text-center' },
-	        _react2.default.createElement(Board, { life: this.state.life }),
+	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleSquareClick: function handleSquareClick(e) {
+	            return _this2.changeSquare(e);
+	          } }),
 	        _react2.default.createElement(
 	          'button',
-	          { onClick: this.cycle },
+	          { onClick: this.startCycle },
 	          'Start'
+	        ),
+	        _react2.default.createElement(
+	          'button',
+	          { onClick: this.stopCycle },
+	          'Stop'
 	        )
 	      );
 	    }
@@ -19891,11 +19911,13 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Square = function Square(props) {
+	  var index = 0;
 	  function createSquare() {
+	    index++;
 	    if (props.val === 0) {
-	      return _react2.default.createElement('div', { className: 'grid-square dead' });
+	      return _react2.default.createElement('div', { key: index.toString(), className: 'grid-square dead' });
 	    } else {
-	      return _react2.default.createElement('div', { className: 'grid-square live' });
+	      return _react2.default.createElement('div', { key: index.toString(), className: 'grid-square live' });
 	    }
 	  }
 
@@ -19907,6 +19929,92 @@
 	};
 
 	exports.default = Square;
+
+/***/ },
+/* 161 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _Row = __webpack_require__(162);
+
+	var _Row2 = _interopRequireDefault(_Row);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Board = function Board(props) {
+	  var index = 0;
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    props.life.map(function (array) {
+	      index++;
+	      return _react2.default.createElement(_Row2.default, {
+	        handleClick: function handleClick(e) {
+	          return props.handleSquareClick(e);
+	        },
+	        key: index.toString(),
+	        rowData: array });
+	    })
+	  );
+	};
+
+	exports.default = Board;
+
+/***/ },
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _Square = __webpack_require__(160);
+
+	var _Square2 = _interopRequireDefault(_Square);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Row = function Row(props) {
+	  var index = 0;
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'rows' },
+	    props.rowData.map(function (value) {
+	      index++;
+	      return _react2.default.createElement(_Square2.default, {
+	        onClick: function onClick(e) {
+	          return props.handleClick(e);
+	        },
+	        key: index.toString(),
+	        val: value });
+	    })
+	  );
+	};
+
+	exports.default = Row;
 
 /***/ }
 /******/ ]);
