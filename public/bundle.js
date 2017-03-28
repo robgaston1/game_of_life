@@ -19842,7 +19842,7 @@
 	  }, {
 	    key: 'iterateCells',
 	    value: function iterateCells() {
-	      var boardArray = this.state.life;
+	      var boardArray = this.state.life.slice();
 	      for (var i = 0; i < boardArray.length; i++) {
 	        for (var j = 0; j < boardArray[i].length; j++) {
 	          var amtNeighbors = this.checkNeighbors(j, i);
@@ -19857,17 +19857,24 @@
 	    }
 	  }, {
 	    key: 'changeSquare',
-	    value: function changeSquare(e) {
-	      console.log('data:', e);
+	    value: function changeSquare(target) {
+	      var id = target.getAttribute('data-reactid').toString();
+	      var row = id.substring(6, 7);
+	      var index = id.substring(9, 10);
+	      var boardArray = this.state.life.slice();
+	      boardArray[row][index] === 1 ? boardArray[row][index] = 0 : boardArray[row][index] = 1;
+	      this.setState({ life: boardArray });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container text-center' },
-	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleClick: function handleClick() {
-	            return console.log("Clicked!");
+	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleClick: function handleClick(target) {
+	            return _this2.changeSquare(target);
 	          } }),
 	        _react2.default.createElement(
 	          'button',
@@ -19913,15 +19920,15 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Board = function Board(props) {
-	  var index = 0;
+	  var index = -1;
 	  return _react2.default.createElement(
 	    'div',
 	    null,
 	    props.life.map(function (array) {
 	      index++;
 	      return _react2.default.createElement(_Row2.default, {
-	        handleClick: function handleClick() {
-	          return props.handleClick();
+	        handleClick: function handleClick(target) {
+	          return props.handleClick(target);
 	        },
 	        key: index.toString(),
 	        rowData: array });
@@ -19956,15 +19963,15 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Row = function Row(props) {
-	  var index = 0;
+	  var index = -1;
 	  return _react2.default.createElement(
 	    'div',
 	    { className: 'rows' },
 	    props.rowData.map(function (value) {
 	      index++;
 	      return _react2.default.createElement(_Square2.default, {
-	        handleClick: function handleClick() {
-	          return props.handleClick();
+	        handleClick: function handleClick(target) {
+	          return props.handleClick(target);
 	        },
 	        key: index.toString(),
 	        val: value });
@@ -19995,19 +20002,18 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Square = function Square(props) {
-	  var index = 0;
 	  function createSquare() {
 	    if (props.val === 0) {
 	      return _react2.default.createElement('div', {
 	        className: 'grid-square dead',
-	        onClick: function onClick() {
-	          return props.handleClick(console.log(event));
+	        onClick: function onClick(event) {
+	          return props.handleClick(event.target);
 	        } });
 	    } else {
 	      return _react2.default.createElement('div', {
 	        className: 'grid-square live',
-	        onClick: function onClick() {
-	          return props.handleClick();
+	        onClick: function onClick(event) {
+	          return props.handleClick(event.target);
 	        } });
 	    }
 	  }

@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import Square from './Square';
 
 const Row = (props) => {
-  var index = 0;
+  var index = -1;
   return (
     <div className="rows">
       {props.rowData.map(value => {
         index++;
         return <Square
-                handleClick={() => props.handleClick()}
+                handleClick={(target) => props.handleClick(target)}
                 key={index.toString()}
                 val={value}/>
       })}

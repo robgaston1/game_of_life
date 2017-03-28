@@ -3,16 +3,15 @@ import ReactDOM from 'react-dom';
 
 
 const Square = (props) => {
-  var index = 0;
   function createSquare () {
     if (props.val === 0) {
       return <div
               className="grid-square dead"
-              onClick={() => props.handleClick(console.log(event))}></div>;
+              onClick={(event) => props.handleClick(event.target)}></div>;
     } else {
       return <div
               className="grid-square live"
-              onClick={() => props.handleClick()}></div>;
+              onClick={(event) => props.handleClick(event.target)}></div>;
     }
   }
 

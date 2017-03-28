@@ -54,10 +54,10 @@ class Game extends Component {
   }
 
   iterateCells () {
-    let boardArray = this.state.life;
-    for (var i = 0; i < boardArray.length; i++) {
-      for (var j = 0; j < boardArray[i].length; j++) {
-        var amtNeighbors = this.checkNeighbors(j, i);
+    let boardArray = this.state.life.slice();
+    for (let i = 0; i < boardArray.length; i++) {
+      for (let j = 0; j < boardArray[i].length; j++) {
+        let amtNeighbors = this.checkNeighbors(j, i);
         if (boardArray[i][j] === 0 && amtNeighbors === 3) {
           boardArray[i][j] = 1;
         } else if (boardArray[i][j] === 1 && (amtNeighbors < 2 || amtNeighbors > 3)) {
@@ -68,14 +68,19 @@ class Game extends Component {
     this.setState({life: boardArray});
   }
 
-  changeSquare (e) {
-    console.log('data:', e);
+  changeSquare (target) {
+    var id = target.getAttribute('data-reactid').toString();
+    var row = id.substring(6,7);
+    var index = id.substring(9,10)
+    let boardArray = this.state.life.slice();
+    boardArray[row][index] === 1 ? boardArray[row][index] = 0 : boardArray[row][index] = 1;
+    this.setState({ life: boardArray});
   }
 
   render () {
     return (
       <div className="container text-center">
-        <Board life={this.state.life} handleClick={() => console.log("Clicked!")}/>
+        <Board life={this.state.life} handleClick={(target) => this.changeSquare(target)}/>
         <button onClick={this.startCycle}>Start</button>
         <button onClick={this.stopCycle}>Stop</button>
       </div>
