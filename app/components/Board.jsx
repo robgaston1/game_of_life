@@ -9,7 +9,7 @@ const Board = (props) => {
       {props.life.map(array => {
         index++;
         return <Row
-                handleClick={(e) => props.handleSquareClick(e)}
+                handleClick={() => props.handleClick()}
                 key={index.toString()}
                 rowData={array}/>
       })}

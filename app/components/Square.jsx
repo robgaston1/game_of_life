@@ -5,11 +5,14 @@ import ReactDOM from 'react-dom';
 const Square = (props) => {
   var index = 0;
   function createSquare () {
-    index++;
     if (props.val === 0) {
-      return <div key={index.toString()} className="grid-square dead"></div>;
+      return <div
+              className="grid-square dead"
+              onClick={() => props.handleClick(console.log(event))}></div>;
     } else {
-      return <div key={index.toString()} className="grid-square live"></div>;
+      return <div
+              className="grid-square live"
+              onClick={() => props.handleClick()}></div>;
     }
   }
 

@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Board from './Board';
 
-class Game extends React.Component {
+class Game extends Component {
 
   constructor(props) {
     super(props)
     var generateLife = function () {
-      //create a function under generateLife that will
+      //create a function later that will generate random 0s and 1s
     return [[0, 1, 0, 1, 0, 0, 1, 0],
             [1, 0, 1, 0, 0, 1, 0, 1],
             [0, 1, 0, 1, 0, 1, 0, 1],
@@ -69,13 +69,13 @@ class Game extends React.Component {
   }
 
   changeSquare (e) {
-    console.log(e);
+    console.log('data:', e);
   }
 
   render () {
     return (
       <div className="container text-center">
-        <Board life={this.state.life} handleSquareClick={(e) => this.changeSquare(e)}/>
+        <Board life={this.state.life} handleClick={() => console.log("Clicked!")}/>
         <button onClick={this.startCycle}>Start</button>
         <button onClick={this.stopCycle}>Stop</button>
       </div>

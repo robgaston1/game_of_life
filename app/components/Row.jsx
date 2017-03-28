@@ -9,7 +9,7 @@ const Row = (props) => {
       {props.rowData.map(value => {
         index++;
         return <Square
-                onClick={(e) => props.handleClick(e)}
+                handleClick={() => props.handleClick()}
                 key={index.toString()}
                 val={value}/>
       })}

@@ -19776,7 +19776,7 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _Board = __webpack_require__(161);
+	var _Board = __webpack_require__(160);
 
 	var _Board2 = _interopRequireDefault(_Board);
 
@@ -19788,8 +19788,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Game = function (_React$Component) {
-	  _inherits(Game, _React$Component);
+	var Game = function (_Component) {
+	  _inherits(Game, _Component);
 
 	  function Game(props) {
 	    _classCallCheck(this, Game);
@@ -19797,7 +19797,7 @@
 	    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
 	    var generateLife = function generateLife() {
-	      //create a function under generateLife that will
+	      //create a function later that will generate random 0s and 1s
 	      return [[0, 1, 0, 1, 0, 0, 1, 0], [1, 0, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0], [0, 1, 0, 1, 1, 0, 1, 0], [1, 1, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 1, 1], [1, 0, 1, 0, 1, 0, 1, 0]];
 	    };
 	    _this.state = {
@@ -19858,18 +19858,16 @@
 	  }, {
 	    key: 'changeSquare',
 	    value: function changeSquare(e) {
-	      console.log(e);
+	      console.log('data:', e);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
-
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container text-center' },
-	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleSquareClick: function handleSquareClick(e) {
-	            return _this2.changeSquare(e);
+	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleClick: function handleClick() {
+	            return console.log("Clicked!");
 	          } }),
 	        _react2.default.createElement(
 	          'button',
@@ -19886,7 +19884,7 @@
 	  }]);
 
 	  return Game;
-	}(_react2.default.Component);
+	}(_react.Component);
 
 	exports.default = Game;
 
@@ -19908,27 +19906,30 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
+	var _Row = __webpack_require__(161);
+
+	var _Row2 = _interopRequireDefault(_Row);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Square = function Square(props) {
+	var Board = function Board(props) {
 	  var index = 0;
-	  function createSquare() {
-	    index++;
-	    if (props.val === 0) {
-	      return _react2.default.createElement('div', { key: index.toString(), className: 'grid-square dead' });
-	    } else {
-	      return _react2.default.createElement('div', { key: index.toString(), className: 'grid-square live' });
-	    }
-	  }
-
 	  return _react2.default.createElement(
-	    'span',
+	    'div',
 	    null,
-	    createSquare()
+	    props.life.map(function (array) {
+	      index++;
+	      return _react2.default.createElement(_Row2.default, {
+	        handleClick: function handleClick() {
+	          return props.handleClick();
+	        },
+	        key: index.toString(),
+	        rowData: array });
+	    })
 	  );
 	};
 
-	exports.default = Square;
+	exports.default = Board;
 
 /***/ },
 /* 161 */
@@ -19948,30 +19949,30 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _Row = __webpack_require__(162);
+	var _Square = __webpack_require__(162);
 
-	var _Row2 = _interopRequireDefault(_Row);
+	var _Square2 = _interopRequireDefault(_Square);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Board = function Board(props) {
+	var Row = function Row(props) {
 	  var index = 0;
 	  return _react2.default.createElement(
 	    'div',
-	    null,
-	    props.life.map(function (array) {
+	    { className: 'rows' },
+	    props.rowData.map(function (value) {
 	      index++;
-	      return _react2.default.createElement(_Row2.default, {
-	        handleClick: function handleClick(e) {
-	          return props.handleSquareClick(e);
+	      return _react2.default.createElement(_Square2.default, {
+	        handleClick: function handleClick() {
+	          return props.handleClick();
 	        },
 	        key: index.toString(),
-	        rowData: array });
+	        val: value });
 	    })
 	  );
 	};
 
-	exports.default = Board;
+	exports.default = Row;
 
 /***/ },
 /* 162 */
@@ -19991,30 +19992,34 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _Square = __webpack_require__(160);
-
-	var _Square2 = _interopRequireDefault(_Square);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Row = function Row(props) {
+	var Square = function Square(props) {
 	  var index = 0;
+	  function createSquare() {
+	    if (props.val === 0) {
+	      return _react2.default.createElement('div', {
+	        className: 'grid-square dead',
+	        onClick: function onClick() {
+	          return props.handleClick(console.log(event));
+	        } });
+	    } else {
+	      return _react2.default.createElement('div', {
+	        className: 'grid-square live',
+	        onClick: function onClick() {
+	          return props.handleClick();
+	        } });
+	    }
+	  }
+
 	  return _react2.default.createElement(
-	    'div',
-	    { className: 'rows' },
-	    props.rowData.map(function (value) {
-	      index++;
-	      return _react2.default.createElement(_Square2.default, {
-	        onClick: function onClick(e) {
-	          return props.handleClick(e);
-	        },
-	        key: index.toString(),
-	        val: value });
-	    })
+	    'span',
+	    null,
+	    createSquare()
 	  );
 	};
 
-	exports.default = Row;
+	exports.default = Square;
 
 /***/ }
 /******/ ]);
