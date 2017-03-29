@@ -19801,12 +19801,14 @@
 	      return [[0, 1, 0, 1, 0, 0, 1, 0], [1, 0, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0], [0, 1, 0, 1, 1, 0, 1, 0], [1, 1, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 1, 1], [1, 0, 1, 0, 1, 0, 1, 0]];
 	    };
 	    _this.state = {
-	      life: generateLife()
+	      life: generateLife(),
+	      generation: 0
 	    };
 	    _this.iterateCells = _this.iterateCells.bind(_this);
 	    _this.checkNeighbors = _this.checkNeighbors.bind(_this);
 	    _this.startCycle = _this.startCycle.bind(_this);
 	    _this.stopCycle = _this.stopCycle.bind(_this);
+	    _this.clearBoard = _this.clearBoard.bind(_this);
 	    return _this;
 	  }
 
@@ -19853,7 +19855,10 @@
 	          }
 	        }
 	      }
-	      this.setState({ life: boardArray });
+	      this.setState({
+	        life: boardArray,
+	        generation: ++this.state.generation
+	      });
 	    }
 	  }, {
 	    key: 'changeSquare',
@@ -19866,6 +19871,18 @@
 	      this.setState({ life: boardArray });
 	    }
 	  }, {
+	    key: 'clearBoard',
+	    value: function clearBoard() {
+	      var boardArray = [];
+	      for (var i = 0; i < this.state.life.length; i++) {
+	        var row = this.state.life[i].map(function () {
+	          return 0;
+	        });
+	        boardArray.push(row);
+	      }
+	      this.setState({ life: boardArray });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
@@ -19873,6 +19890,12 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container text-center' },
+	        _react2.default.createElement(
+	          'h4',
+	          null,
+	          'Generation: ',
+	          this.state.generation
+	        ),
 	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleClick: function handleClick(target) {
 	            return _this2.changeSquare(target);
 	          } }),
@@ -19885,6 +19908,11 @@
 	          'button',
 	          { onClick: this.stopCycle },
 	          'Stop'
+	        ),
+	        _react2.default.createElement(
+	          'button',
+	          { onClick: this.clearBoard },
+	          'Clear'
 	        )
 	      );
 	    }

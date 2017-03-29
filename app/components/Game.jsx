@@ -19,17 +19,20 @@ class Game extends Component {
             ];
     }
     this.state = {
-      life: generateLife()
+      life: generateLife(),
+      generation: 0
     }
     this.iterateCells = this.iterateCells.bind(this);
     this.checkNeighbors = this.checkNeighbors.bind(this);
     this.startCycle = this.startCycle.bind(this);
     this.stopCycle = this.stopCycle.bind(this);
+    this.clearBoard = this.clearBoard.bind(this);
   }
 
   startCycle () {
     var intervalId = setInterval(this.iterateCells, 300);
     this.setState({intervalId: intervalId});
+
   }
 
   stopCycle () {
@@ -65,7 +68,10 @@ class Game extends Component {
         }
       }
     }
-    this.setState({life: boardArray});
+    this.setState({
+      life: boardArray,
+      generation: ++this.state.generation
+      });
   }
 
   changeSquare (target) {
@@ -77,12 +83,23 @@ class Game extends Component {
     this.setState({ life: boardArray});
   }
 
+  clearBoard () {
+    let boardArray = [];
+    for (let i = 0; i < this.state.life.length; i++) {
+      let row = this.state.life[i].map(() => {return 0});
+      boardArray.push(row);
+    }
+      this.setState({ life: boardArray });
+  }
+
   render () {
     return (
       <div className="container text-center">
+        <h4>Generation: {this.state.generation}</h4>
         <Board life={this.state.life} handleClick={(target) => this.changeSquare(target)}/>
         <button onClick={this.startCycle}>Start</button>
         <button onClick={this.stopCycle}>Stop</button>
+        <button onClick={this.clearBoard}>Clear</button>
       </div>
     );
   }
