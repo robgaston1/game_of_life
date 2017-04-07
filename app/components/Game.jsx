@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Board from './Board';
 import GridButtons from './GridButtons';
+import Info from './Info';
+import StartButton from './StartButton';
 
 class Game extends Component {
 
@@ -8,13 +10,14 @@ class Game extends Component {
     super(props)
 
     this.state = {
-      life: this.generateLife(10, 10),
-      generation: 0
+      life: this.generateLife(25, 25),
+      generation: 0,
+      cycleRunning: false,
+      buttonMessage: "Start"
     }
     this.iterateCells = this.iterateCells.bind(this);
     this.checkNeighbors = this.checkNeighbors.bind(this);
-    this.startCycle = this.startCycle.bind(this);
-    this.stopCycle = this.stopCycle.bind(this);
+    this.toggleCycle = this.toggleCycle.bind(this);
     this.clearBoard = this.clearBoard.bind(this);
     this.generateLife = this.generateLife.bind(this);
   }
@@ -32,13 +35,18 @@ class Game extends Component {
     return life;
 }
 
-  startCycle () {
-    var intervalId = setInterval(this.iterateCells, 300);
-    this.setState({intervalId: intervalId});
-  }
-
-  stopCycle () {
-    clearInterval(this.state.intervalId);
+  toggleCycle () {
+    if (this.state.cycleRunning === false) {
+      var intervalId = setInterval(this.iterateCells, 300);
+      this.setState({
+        intervalId: intervalId,
+        buttonMessage: "Stop"
+        });
+    } else {
+        clearInterval(this.state.intervalId);
+        this.setState({ buttonMessage: "Start" })
+    }
+    this.setState({ cycleRunning: !this.state.cycleRunning });
   }
 
   checkNeighbors (cellX, cellY) {
@@ -104,11 +112,10 @@ class Game extends Component {
   render () {
     return (
       <div className="container text-center">
+        <Info />
         <h4>Generation: {this.state.generation}</h4>
         <Board life={this.state.life} handleClick={(target) => this.changeSquare(target)}/>
-        <button onClick={this.startCycle}>Start</button>
-        <button onClick={this.stopCycle}>Stop</button>
-        <button onClick={this.clearBoard}>Clear</button>
+        <StartButton startMessage={this.state.buttonMessage} handleStartClick={this.toggleCycle}/>
         <GridButtons handleSubmit={(row, column) => this.updateGrid(row, column)}/>
       </div>
     );

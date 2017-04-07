@@ -4,7 +4,7 @@ import Row from './Row';
 const Board = (props) => {
   var index = -1;
   return (
-    <div>
+    <div className="grid">
       {props.life.map(array => {
         index++;
         return <Row

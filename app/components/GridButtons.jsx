@@ -5,8 +5,8 @@ class GridButtons extends Component {
     super(props)
 
     this.state = {
-      row: 10,
-      column: 10
+      row: 25,
+      column: 25
     }
   }
 
@@ -22,14 +22,26 @@ class GridButtons extends Component {
     return (
       <div>
         <p>Row:
-          <span>{this.state.row}</span>
-          <span onClick={() => this.changeRow(1)}>+</span>
-          <span onClick={() => this.changeRow(-1)}>-</span>
+          {this.state.row}
+          <span
+            onClick={() => this.changeRow(1)}
+            className="glyphicon glyphicon-plus">
+          </span>
+          <span
+            onClick={() => this.changeRow(-1)}
+            className="glyphicon glyphicon-minus">
+          </span>
         </p>
         <p>Column:
-          <span>{this.state.column}</span>
-          <span onClick={() => this.changeCol(1)}>+</span>
-          <span onClick={() => this.changeCol(-1)}>-</span>
+          {this.state.column}
+          <span
+            onClick={() => this.changeCol(1)}
+            className="glyphicon glyphicon-plus">
+          </span>
+          <span
+            onClick={() => this.changeCol(-1)}
+            className="glyphicon glyphicon-minus">
+          </span>
         </p>
         <button type="submit" onClick={() => this.props.handleSubmit(this.state.row, this.state.column)}>Update Grid</button>
       </div>

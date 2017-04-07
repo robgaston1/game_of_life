@@ -19780,6 +19780,14 @@
 
 	var _GridButtons2 = _interopRequireDefault(_GridButtons);
 
+	var _Info = __webpack_require__(164);
+
+	var _Info2 = _interopRequireDefault(_Info);
+
+	var _StartButton = __webpack_require__(165);
+
+	var _StartButton2 = _interopRequireDefault(_StartButton);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19797,13 +19805,14 @@
 	    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
 	    _this.state = {
-	      life: _this.generateLife(10, 10),
-	      generation: 0
+	      life: _this.generateLife(25, 25),
+	      generation: 0,
+	      cycleRunning: false,
+	      buttonMessage: "Start"
 	    };
 	    _this.iterateCells = _this.iterateCells.bind(_this);
 	    _this.checkNeighbors = _this.checkNeighbors.bind(_this);
-	    _this.startCycle = _this.startCycle.bind(_this);
-	    _this.stopCycle = _this.stopCycle.bind(_this);
+	    _this.toggleCycle = _this.toggleCycle.bind(_this);
 	    _this.clearBoard = _this.clearBoard.bind(_this);
 	    _this.generateLife = _this.generateLife.bind(_this);
 	    return _this;
@@ -19824,15 +19833,19 @@
 	      return life;
 	    }
 	  }, {
-	    key: 'startCycle',
-	    value: function startCycle() {
-	      var intervalId = setInterval(this.iterateCells, 300);
-	      this.setState({ intervalId: intervalId });
-	    }
-	  }, {
-	    key: 'stopCycle',
-	    value: function stopCycle() {
-	      clearInterval(this.state.intervalId);
+	    key: 'toggleCycle',
+	    value: function toggleCycle() {
+	      if (this.state.cycleRunning === false) {
+	        var intervalId = setInterval(this.iterateCells, 300);
+	        this.setState({
+	          intervalId: intervalId,
+	          buttonMessage: "Stop"
+	        });
+	      } else {
+	        clearInterval(this.state.intervalId);
+	        this.setState({ buttonMessage: "Start" });
+	      }
+	      this.setState({ cycleRunning: !this.state.cycleRunning });
 	    }
 	  }, {
 	    key: 'checkNeighbors',
@@ -19909,6 +19922,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container text-center' },
+	        _react2.default.createElement(_Info2.default, null),
 	        _react2.default.createElement(
 	          'h4',
 	          null,
@@ -19918,21 +19932,7 @@
 	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleClick: function handleClick(target) {
 	            return _this2.changeSquare(target);
 	          } }),
-	        _react2.default.createElement(
-	          'button',
-	          { onClick: this.startCycle },
-	          'Start'
-	        ),
-	        _react2.default.createElement(
-	          'button',
-	          { onClick: this.stopCycle },
-	          'Stop'
-	        ),
-	        _react2.default.createElement(
-	          'button',
-	          { onClick: this.clearBoard },
-	          'Clear'
-	        ),
+	        _react2.default.createElement(_StartButton2.default, { startMessage: this.state.buttonMessage, handleStartClick: this.toggleCycle }),
 	        _react2.default.createElement(_GridButtons2.default, { handleSubmit: function handleSubmit(row, column) {
 	            return _this2.updateGrid(row, column);
 	          } })
@@ -19969,7 +19969,7 @@
 	  var index = -1;
 	  return _react2.default.createElement(
 	    'div',
-	    null,
+	    { className: 'grid' },
 	    props.life.map(function (array) {
 	      index++;
 	      return _react2.default.createElement(_Row2.default, {
@@ -20102,8 +20102,8 @@
 	    var _this = _possibleConstructorReturn(this, (GridButtons.__proto__ || Object.getPrototypeOf(GridButtons)).call(this, props));
 
 	    _this.state = {
-	      row: 10,
-	      column: 10
+	      row: 25,
+	      column: 25
 	    };
 	    return _this;
 	  }
@@ -20130,49 +20130,33 @@
 	          "p",
 	          null,
 	          "Row:",
-	          _react2.default.createElement(
-	            "span",
-	            null,
-	            this.state.row
-	          ),
-	          _react2.default.createElement(
-	            "span",
-	            { onClick: function onClick() {
-	                return _this2.changeRow(1);
-	              } },
-	            "+"
-	          ),
-	          _react2.default.createElement(
-	            "span",
-	            { onClick: function onClick() {
-	                return _this2.changeRow(-1);
-	              } },
-	            "-"
-	          )
+	          this.state.row,
+	          _react2.default.createElement("span", {
+	            onClick: function onClick() {
+	              return _this2.changeRow(1);
+	            },
+	            className: "glyphicon glyphicon-plus" }),
+	          _react2.default.createElement("span", {
+	            onClick: function onClick() {
+	              return _this2.changeRow(-1);
+	            },
+	            className: "glyphicon glyphicon-minus" })
 	        ),
 	        _react2.default.createElement(
 	          "p",
 	          null,
 	          "Column:",
-	          _react2.default.createElement(
-	            "span",
-	            null,
-	            this.state.column
-	          ),
-	          _react2.default.createElement(
-	            "span",
-	            { onClick: function onClick() {
-	                return _this2.changeCol(1);
-	              } },
-	            "+"
-	          ),
-	          _react2.default.createElement(
-	            "span",
-	            { onClick: function onClick() {
-	                return _this2.changeCol(-1);
-	              } },
-	            "-"
-	          )
+	          this.state.column,
+	          _react2.default.createElement("span", {
+	            onClick: function onClick() {
+	              return _this2.changeCol(1);
+	            },
+	            className: "glyphicon glyphicon-plus" }),
+	          _react2.default.createElement("span", {
+	            onClick: function onClick() {
+	              return _this2.changeCol(-1);
+	            },
+	            className: "glyphicon glyphicon-minus" })
 	        ),
 	        _react2.default.createElement(
 	          "button",
@@ -20189,6 +20173,87 @@
 	}(_react.Component);
 
 	exports.default = GridButtons;
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Info = function Info(props) {
+	  return _react2.default.createElement(
+	    "div",
+	    null,
+	    _react2.default.createElement(
+	      "h3",
+	      null,
+	      "If you'd like to read up on John Conway's Game of Life, visit",
+	      _react2.default.createElement(
+	        "a",
+	        { href: "https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life", target: "blank" },
+	        " this "
+	      ),
+	      "Wikipedia article"
+	    ),
+	    _react2.default.createElement(
+	      "h3",
+	      null,
+	      "Or watch Conway talk about it ",
+	      _react2.default.createElement(
+	        "a",
+	        { href: "https://www.youtube.com/watch?v=E8kUJL04ELA", target: "blank" },
+	        "here"
+	      )
+	    )
+	  );
+	};
+
+	exports.default = Info;
+
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var StartButton = function StartButton(props) {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'button',
+	      { onClick: props.handleStartClick },
+	      props.startMessage
+	    ),
+	    _react2.default.createElement(
+	      'button',
+	      { onClick: props.handleClearClick },
+	      'Clear'
+	    )
+	  );
+	};
+
+	exports.default = StartButton;
 
 /***/ }
 /******/ ]);
