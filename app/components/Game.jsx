@@ -1,25 +1,14 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import Board from './Board';
+import GridButtons from './GridButtons';
 
 class Game extends Component {
 
   constructor(props) {
     super(props)
-    var generateLife = function () {
-      //create a function later that will generate random 0s and 1s
-    return [[0, 1, 0, 1, 0, 0, 1, 0],
-            [1, 0, 1, 0, 0, 1, 0, 1],
-            [0, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 1, 0, 1, 0, 1, 0],
-            [0, 1, 0, 1, 1, 0, 1, 0],
-            [1, 1, 1, 0, 0, 1, 0, 1],
-            [0, 1, 0, 1, 0, 1, 1, 1],
-            [1, 0, 1, 0, 1, 0, 1, 0],
-            ];
-    }
+
     this.state = {
-      life: generateLife(),
+      life: this.generateLife(10, 10),
       generation: 0
     }
     this.iterateCells = this.iterateCells.bind(this);
@@ -27,12 +16,25 @@ class Game extends Component {
     this.startCycle = this.startCycle.bind(this);
     this.stopCycle = this.stopCycle.bind(this);
     this.clearBoard = this.clearBoard.bind(this);
+    this.generateLife = this.generateLife.bind(this);
   }
+
+  generateLife (x, y) {
+    let life = [];
+    for (var i = 0; i < y; i++) {
+      let row = [];
+      for (var j = 0; j < x; j++) {
+        let val = Math.round(Math.random());
+        row.push(val);
+      }
+      life.push(row);
+    }
+    return life;
+}
 
   startCycle () {
     var intervalId = setInterval(this.iterateCells, 300);
     this.setState({intervalId: intervalId});
-
   }
 
   stopCycle () {
@@ -86,10 +88,17 @@ class Game extends Component {
   clearBoard () {
     let boardArray = [];
     for (let i = 0; i < this.state.life.length; i++) {
-      let row = this.state.life[i].map(() => {return 0});
+      let row = this.state.life[i].map(() => { return 0 });
       boardArray.push(row);
     }
       this.setState({ life: boardArray });
+  }
+
+  updateGrid (row, column) {
+      let life = this.generateLife(row, column);
+      this.setState({
+        life: life
+       });
   }
 
   render () {
@@ -100,6 +109,7 @@ class Game extends Component {
         <button onClick={this.startCycle}>Start</button>
         <button onClick={this.stopCycle}>Stop</button>
         <button onClick={this.clearBoard}>Clear</button>
+        <GridButtons handleSubmit={(row, column) => this.updateGrid(row, column)}/>
       </div>
     );
   }

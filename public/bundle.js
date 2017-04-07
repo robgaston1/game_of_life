@@ -19772,13 +19772,13 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(158);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
 	var _Board = __webpack_require__(160);
 
 	var _Board2 = _interopRequireDefault(_Board);
+
+	var _GridButtons = __webpack_require__(163);
+
+	var _GridButtons2 = _interopRequireDefault(_GridButtons);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19796,12 +19796,8 @@
 
 	    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-	    var generateLife = function generateLife() {
-	      //create a function later that will generate random 0s and 1s
-	      return [[0, 1, 0, 1, 0, 0, 1, 0], [1, 0, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0], [0, 1, 0, 1, 1, 0, 1, 0], [1, 1, 1, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 1, 1], [1, 0, 1, 0, 1, 0, 1, 0]];
-	    };
 	    _this.state = {
-	      life: generateLife(),
+	      life: _this.generateLife(10, 10),
 	      generation: 0
 	    };
 	    _this.iterateCells = _this.iterateCells.bind(_this);
@@ -19809,10 +19805,25 @@
 	    _this.startCycle = _this.startCycle.bind(_this);
 	    _this.stopCycle = _this.stopCycle.bind(_this);
 	    _this.clearBoard = _this.clearBoard.bind(_this);
+	    _this.generateLife = _this.generateLife.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(Game, [{
+	    key: 'generateLife',
+	    value: function generateLife(x, y) {
+	      var life = [];
+	      for (var i = 0; i < y; i++) {
+	        var row = [];
+	        for (var j = 0; j < x; j++) {
+	          var val = Math.round(Math.random());
+	          row.push(val);
+	        }
+	        life.push(row);
+	      }
+	      return life;
+	    }
+	  }, {
 	    key: 'startCycle',
 	    value: function startCycle() {
 	      var intervalId = setInterval(this.iterateCells, 300);
@@ -19883,6 +19894,14 @@
 	      this.setState({ life: boardArray });
 	    }
 	  }, {
+	    key: 'updateGrid',
+	    value: function updateGrid(row, column) {
+	      var life = this.generateLife(row, column);
+	      this.setState({
+	        life: life
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
@@ -19913,7 +19932,10 @@
 	          'button',
 	          { onClick: this.clearBoard },
 	          'Clear'
-	        )
+	        ),
+	        _react2.default.createElement(_GridButtons2.default, { handleSubmit: function handleSubmit(row, column) {
+	            return _this2.updateGrid(row, column);
+	          } })
 	      );
 	    }
 	  }]);
@@ -19936,10 +19958,6 @@
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
-
-	var _reactDom = __webpack_require__(158);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
 
 	var _Row = __webpack_require__(161);
 
@@ -19979,10 +19997,6 @@
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
-
-	var _reactDom = __webpack_require__(158);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
 
 	var _Square = __webpack_require__(162);
 
@@ -20054,6 +20068,127 @@
 	};
 
 	exports.default = Square;
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var GridButtons = function (_Component) {
+	  _inherits(GridButtons, _Component);
+
+	  function GridButtons(props) {
+	    _classCallCheck(this, GridButtons);
+
+	    var _this = _possibleConstructorReturn(this, (GridButtons.__proto__ || Object.getPrototypeOf(GridButtons)).call(this, props));
+
+	    _this.state = {
+	      row: 10,
+	      column: 10
+	    };
+	    return _this;
+	  }
+
+	  _createClass(GridButtons, [{
+	    key: "changeRow",
+	    value: function changeRow(val) {
+	      this.setState({ row: this.state.row + val });
+	    }
+	  }, {
+	    key: "changeCol",
+	    value: function changeCol(val) {
+	      this.setState({ column: this.state.column + val });
+	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      var _this2 = this;
+
+	      return _react2.default.createElement(
+	        "div",
+	        null,
+	        _react2.default.createElement(
+	          "p",
+	          null,
+	          "Row:",
+	          _react2.default.createElement(
+	            "span",
+	            null,
+	            this.state.row
+	          ),
+	          _react2.default.createElement(
+	            "span",
+	            { onClick: function onClick() {
+	                return _this2.changeRow(1);
+	              } },
+	            "+"
+	          ),
+	          _react2.default.createElement(
+	            "span",
+	            { onClick: function onClick() {
+	                return _this2.changeRow(-1);
+	              } },
+	            "-"
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "p",
+	          null,
+	          "Column:",
+	          _react2.default.createElement(
+	            "span",
+	            null,
+	            this.state.column
+	          ),
+	          _react2.default.createElement(
+	            "span",
+	            { onClick: function onClick() {
+	                return _this2.changeCol(1);
+	              } },
+	            "+"
+	          ),
+	          _react2.default.createElement(
+	            "span",
+	            { onClick: function onClick() {
+	                return _this2.changeCol(-1);
+	              } },
+	            "-"
+	          )
+	        ),
+	        _react2.default.createElement(
+	          "button",
+	          { type: "submit", onClick: function onClick() {
+	              return _this2.props.handleSubmit(_this2.state.row, _this2.state.column);
+	            } },
+	          "Update Grid"
+	        )
+	      );
+	    }
+	  }]);
+
+	  return GridButtons;
+	}(_react.Component);
+
+	exports.default = GridButtons;
 
 /***/ }
 /******/ ]);
