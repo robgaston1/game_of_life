@@ -85,9 +85,9 @@ class Game extends Component {
   }
 
   changeSquare (target) {
-    var id = target.getAttribute('data-reactid').toString();
-    var row = id.substring(6,7);
-    var index = id.substring(9,10)
+    var id = target.getAttribute('data-reactid').split(".");
+    var row = id[3].substring(1);
+    var index = id[4].substring(1);
     let boardArray = this.state.life.slice();
     boardArray[row][index] === 1 ? boardArray[row][index] = 0 : boardArray[row][index] = 1;
     this.setState({ life: boardArray});
@@ -115,7 +115,10 @@ class Game extends Component {
         <Info />
         <h4>Generation: {this.state.generation}</h4>
         <Board life={this.state.life} handleClick={(target) => this.changeSquare(target)}/>
-        <StartButton startMessage={this.state.buttonMessage} handleStartClick={this.toggleCycle}/>
+        <StartButton
+          startMessage={this.state.buttonMessage}
+          handleStartClick={this.toggleCycle}
+          handleClearClick={this.clearBoard}/>
         <GridButtons handleSubmit={(row, column) => this.updateGrid(row, column)}/>
       </div>
     );

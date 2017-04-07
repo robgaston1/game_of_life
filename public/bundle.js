@@ -19887,9 +19887,9 @@
 	  }, {
 	    key: 'changeSquare',
 	    value: function changeSquare(target) {
-	      var id = target.getAttribute('data-reactid').toString();
-	      var row = id.substring(6, 7);
-	      var index = id.substring(9, 10);
+	      var id = target.getAttribute('data-reactid').split(".");
+	      var row = id[3].substring(1);
+	      var index = id[4].substring(1);
 	      var boardArray = this.state.life.slice();
 	      boardArray[row][index] === 1 ? boardArray[row][index] = 0 : boardArray[row][index] = 1;
 	      this.setState({ life: boardArray });
@@ -19932,7 +19932,10 @@
 	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleClick: function handleClick(target) {
 	            return _this2.changeSquare(target);
 	          } }),
-	        _react2.default.createElement(_StartButton2.default, { startMessage: this.state.buttonMessage, handleStartClick: this.toggleCycle }),
+	        _react2.default.createElement(_StartButton2.default, {
+	          startMessage: this.state.buttonMessage,
+	          handleStartClick: this.toggleCycle,
+	          handleClearClick: this.clearBoard }),
 	        _react2.default.createElement(_GridButtons2.default, { handleSubmit: function handleSubmit(row, column) {
 	            return _this2.updateGrid(row, column);
 	          } })
@@ -20195,24 +20198,33 @@
 	    "div",
 	    null,
 	    _react2.default.createElement(
-	      "h3",
+	      "h1",
 	      null,
-	      "If you'd like to read up on John Conway's Game of Life, visit",
-	      _react2.default.createElement(
-	        "a",
-	        { href: "https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life", target: "blank" },
-	        " this "
-	      ),
-	      "Wikipedia article"
+	      "John Conway's Game of Life Simulator"
 	    ),
 	    _react2.default.createElement(
-	      "h3",
-	      null,
-	      "Or watch Conway talk about it ",
+	      "div",
+	      { className: "summary" },
 	      _react2.default.createElement(
-	        "a",
-	        { href: "https://www.youtube.com/watch?v=E8kUJL04ELA", target: "blank" },
-	        "here"
+	        "p",
+	        null,
+	        "Simplified, the game of life depicts the genesis and death of cellular life according to basic mathematical rules."
+	      ),
+	      _react2.default.createElement(
+	        "p",
+	        null,
+	        "If you'd like to read up on John Conway's Game of Life, visit",
+	        _react2.default.createElement(
+	          "a",
+	          { href: "https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life", target: "blank" },
+	          " this "
+	        ),
+	        "Wikipedia article or watch Conway talk about it ",
+	        _react2.default.createElement(
+	          "a",
+	          { href: "https://www.youtube.com/watch?v=E8kUJL04ELA", target: "blank" },
+	          "on this Youtube video."
+	        )
 	      )
 	    )
 	  );
