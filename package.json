@@ -4,7 +4,8 @@
   "description": "Simple react app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "Rob",
   "license": "MIT",
@@ -22,5 +23,8 @@
     "css-loader": "^0.27.3",
     "style-loader": "^0.16.0",
     "webpack": "^1.12.13"
+  },
+  "engines": {
+    "node": "7.5.0"
   }
 }
