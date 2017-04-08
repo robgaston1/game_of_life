@@ -10,7 +10,7 @@ class Game extends Component {
     super(props)
 
     this.state = {
-      life: this.generateLife(25, 25),
+      life: this.generateLife(20, 20),
       generation: 0,
       cycleRunning: false,
       buttonMessage: "Start"
@@ -68,11 +68,13 @@ class Game extends Component {
 
   iterateCells () {
     let boardArray = this.state.life.slice();
+    let isThereLife = "no";
     for (let i = 0; i < boardArray.length; i++) {
       for (let j = 0; j < boardArray[i].length; j++) {
         let amtNeighbors = this.checkNeighbors(j, i);
         if (boardArray[i][j] === 0 && amtNeighbors === 3) {
           boardArray[i][j] = 1;
+          isThereLife = "yes";
         } else if (boardArray[i][j] === 1 && (amtNeighbors < 2 || amtNeighbors > 3)) {
           boardArray[i][j] = 0;
         }
@@ -82,6 +84,9 @@ class Game extends Component {
       life: boardArray,
       generation: ++this.state.generation
       });
+      if (isThereLife === "no") {
+        toggleCycle();
+      }
   }
 
   changeSquare (target) {
@@ -100,6 +105,7 @@ class Game extends Component {
       boardArray.push(row);
     }
       this.setState({ life: boardArray });
+      toggleCycle();
   }
 
   updateGrid (row, column) {
@@ -115,6 +121,7 @@ class Game extends Component {
         <Info />
         <h4>Generation: {this.state.generation}</h4>
         <Board life={this.state.life} handleClick={(target) => this.changeSquare(target)}/>
+        <p><strong>Click on a cell to change it's state!</strong></p>
         <StartButton
           startMessage={this.state.buttonMessage}
           handleStartClick={this.toggleCycle}

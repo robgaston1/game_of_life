@@ -37,10 +37,10 @@ body {
   background-color: #22b777;
 }
 
-.dead {
-
-}
-
 .glyphicon {
   margin: 10px;
+}
+
+.numbers {
+  font-size: 18px;
 }

@@ -19805,7 +19805,7 @@
 	    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
 	    _this.state = {
-	      life: _this.generateLife(25, 25),
+	      life: _this.generateLife(20, 20),
 	      generation: 0,
 	      cycleRunning: false,
 	      buttonMessage: "Start"
@@ -19869,11 +19869,13 @@
 	    key: 'iterateCells',
 	    value: function iterateCells() {
 	      var boardArray = this.state.life.slice();
+	      var isThereLife = "no";
 	      for (var i = 0; i < boardArray.length; i++) {
 	        for (var j = 0; j < boardArray[i].length; j++) {
 	          var amtNeighbors = this.checkNeighbors(j, i);
 	          if (boardArray[i][j] === 0 && amtNeighbors === 3) {
 	            boardArray[i][j] = 1;
+	            isThereLife = "yes";
 	          } else if (boardArray[i][j] === 1 && (amtNeighbors < 2 || amtNeighbors > 3)) {
 	            boardArray[i][j] = 0;
 	          }
@@ -19883,6 +19885,9 @@
 	        life: boardArray,
 	        generation: ++this.state.generation
 	      });
+	      if (isThereLife === "no") {
+	        toggleCycle();
+	      }
 	    }
 	  }, {
 	    key: 'changeSquare',
@@ -19905,6 +19910,7 @@
 	        boardArray.push(row);
 	      }
 	      this.setState({ life: boardArray });
+	      toggleCycle();
 	    }
 	  }, {
 	    key: 'updateGrid',
@@ -19932,6 +19938,15 @@
 	        _react2.default.createElement(_Board2.default, { life: this.state.life, handleClick: function handleClick(target) {
 	            return _this2.changeSquare(target);
 	          } }),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'Click on a cell to change it\'s state!'
+	          )
+	        ),
 	        _react2.default.createElement(_StartButton2.default, {
 	          startMessage: this.state.buttonMessage,
 	          handleStartClick: this.toggleCycle,
@@ -20105,8 +20120,8 @@
 	    var _this = _possibleConstructorReturn(this, (GridButtons.__proto__ || Object.getPrototypeOf(GridButtons)).call(this, props));
 
 	    _this.state = {
-	      row: 25,
-	      column: 25
+	      row: 20,
+	      column: 20
 	    };
 	    return _this;
 	  }
@@ -20130,40 +20145,51 @@
 	        "div",
 	        null,
 	        _react2.default.createElement(
-	          "p",
+	          "h4",
 	          null,
-	          "Row:",
-	          this.state.row,
-	          _react2.default.createElement("span", {
-	            onClick: function onClick() {
-	              return _this2.changeRow(1);
-	            },
-	            className: "glyphicon glyphicon-plus" }),
-	          _react2.default.createElement("span", {
-	            onClick: function onClick() {
-	              return _this2.changeRow(-1);
-	            },
-	            className: "glyphicon glyphicon-minus" })
+	          "Row:"
 	        ),
+	        _react2.default.createElement("span", {
+	          onClick: function onClick() {
+	            return _this2.changeRow(1);
+	          },
+	          className: "glyphicon glyphicon-plus" }),
 	        _react2.default.createElement(
-	          "p",
-	          null,
-	          "Column:",
-	          this.state.column,
-	          _react2.default.createElement("span", {
-	            onClick: function onClick() {
-	              return _this2.changeCol(1);
-	            },
-	            className: "glyphicon glyphicon-plus" }),
-	          _react2.default.createElement("span", {
-	            onClick: function onClick() {
-	              return _this2.changeCol(-1);
-	            },
-	            className: "glyphicon glyphicon-minus" })
+	          "span",
+	          { className: "numbers" },
+	          this.state.row
 	        ),
+	        _react2.default.createElement("span", {
+	          onClick: function onClick() {
+	            return _this2.changeRow(-1);
+	          },
+	          className: "glyphicon glyphicon-minus" }),
+	        _react2.default.createElement(
+	          "h4",
+	          null,
+	          "Column:"
+	        ),
+	        _react2.default.createElement("span", {
+	          onClick: function onClick() {
+	            return _this2.changeCol(1);
+	          },
+	          className: "glyphicon glyphicon-plus" }),
+	        _react2.default.createElement(
+	          "span",
+	          { className: "numbers" },
+	          this.state.column
+	        ),
+	        _react2.default.createElement("span", {
+	          onClick: function onClick() {
+	            return _this2.changeCol(-1);
+	          },
+	          className: "glyphicon glyphicon-minus" }),
+	        _react2.default.createElement("br", null),
 	        _react2.default.createElement(
 	          "button",
-	          { type: "submit", onClick: function onClick() {
+	          {
+	            className: "btn btn-large btn-warning",
+	            onClick: function onClick() {
 	              return _this2.props.handleSubmit(_this2.state.row, _this2.state.column);
 	            } },
 	          "Update Grid"
@@ -20196,34 +20222,38 @@
 	var Info = function Info(props) {
 	  return _react2.default.createElement(
 	    "div",
-	    null,
-	    _react2.default.createElement(
-	      "h1",
-	      null,
-	      "John Conway's Game of Life Simulator"
-	    ),
+	    { className: "row" },
 	    _react2.default.createElement(
 	      "div",
-	      { className: "summary" },
+	      null,
 	      _react2.default.createElement(
-	        "p",
+	        "h1",
 	        null,
-	        "Simplified, the game of life depicts the genesis and death of cellular life according to basic mathematical rules."
+	        "John Conway's Game of Life Simulator"
 	      ),
 	      _react2.default.createElement(
-	        "p",
-	        null,
-	        "If you'd like to read up on John Conway's Game of Life, visit",
+	        "div",
+	        { className: "summary" },
 	        _react2.default.createElement(
-	          "a",
-	          { href: "https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life", target: "blank" },
-	          " this "
+	          "p",
+	          null,
+	          "Simplified, the game of life depicts the genesis and death of cellular life according to basic mathematical rules."
 	        ),
-	        "Wikipedia article or watch Conway talk about it ",
 	        _react2.default.createElement(
-	          "a",
-	          { href: "https://www.youtube.com/watch?v=E8kUJL04ELA", target: "blank" },
-	          "on this Youtube video."
+	          "p",
+	          null,
+	          "If you'd like to read up on John Conway's Game of Life, visit",
+	          _react2.default.createElement(
+	            "a",
+	            { href: "https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life", target: "blank" },
+	            " this "
+	          ),
+	          "Wikipedia article or watch Conway talk about it ",
+	          _react2.default.createElement(
+	            "a",
+	            { href: "https://www.youtube.com/watch?v=E8kUJL04ELA", target: "blank" },
+	            "on this Youtube video."
+	          )
 	        )
 	      )
 	    )
@@ -20236,7 +20266,7 @@
 /* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -20250,17 +20280,21 @@
 
 	var StartButton = function StartButton(props) {
 	  return _react2.default.createElement(
-	    'div',
+	    "div",
 	    null,
 	    _react2.default.createElement(
-	      'button',
-	      { onClick: props.handleStartClick },
+	      "button",
+	      {
+	        className: "btn btn-success btn-large",
+	        onClick: props.handleStartClick },
 	      props.startMessage
 	    ),
 	    _react2.default.createElement(
-	      'button',
-	      { onClick: props.handleClearClick },
-	      'Clear'
+	      "button",
+	      {
+	        className: "btn btn-large btn-default",
+	        onClick: props.handleClearClick },
+	      "Clear"
 	    )
 	  );
 	};

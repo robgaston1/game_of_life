@@ -12,6 +12,7 @@ const Board = (props) => {
                 key={index.toString()}
                 rowData={array}/>
       })}
+      
     </div>
   )
 }
