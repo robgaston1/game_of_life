@@ -19886,7 +19886,7 @@
 	        generation: ++this.state.generation
 	      });
 	      if (isThereLife === "no") {
-	        toggleCycle();
+	        this.toggleCycle();
 	      }
 	    }
 	  }, {
@@ -19910,7 +19910,7 @@
 	        boardArray.push(row);
 	      }
 	      this.setState({ life: boardArray });
-	      toggleCycle();
+	      this.toggleCycle();
 	    }
 	  }, {
 	    key: 'updateGrid',

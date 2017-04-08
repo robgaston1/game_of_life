@@ -85,7 +85,7 @@ class Game extends Component {
       generation: ++this.state.generation
       });
       if (isThereLife === "no") {
-        toggleCycle();
+        this.toggleCycle();
       }
   }
 
@@ -105,7 +105,7 @@ class Game extends Component {
       boardArray.push(row);
     }
       this.setState({ life: boardArray });
-      toggleCycle();
+      this.toggleCycle();
   }
 
   updateGrid (row, column) {
