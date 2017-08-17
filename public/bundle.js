@@ -19810,8 +19810,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var App = function (_React$Component) {
-	  _inherits(App, _React$Component);
+	var App = function (_Component) {
+	  _inherits(App, _Component);
 
 	  function App() {
 	    _classCallCheck(this, App);
@@ -19822,25 +19822,49 @@
 	  _createClass(App, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.generateLife();
+	      this.props.actions.generateLife(20, 20);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_Game2.default, { life: this.props.life })
+	        _react2.default.createElement(_Game2.default, {
+	          life: this.props.life,
+	          generation: this.props.generation,
+	          updateLife: function updateLife(lifeArray) {
+	            return _this2.props.actions.updateLife(lifeArray);
+	          },
+	          changeSquare: function changeSquare(target) {
+	            return _this2.props.actions.changeSquare(target);
+	          },
+	          cycleLife: function cycleLife() {
+	            return _this2.props.actions.cycleLife();
+	          },
+	          addGen: function addGen() {
+	            return _this2.props.actions.addGen();
+	          },
+	          clearBoard: function clearBoard() {
+	            return _this2.props.actions.clearBoard();
+	          },
+	          updateGrid: function updateGrid(row, column) {
+	            return _this2.props.actions.generateLife(row, column);
+	          }
+	        })
 	      );
 	    }
 	  }]);
 
 	  return App;
-	}(_react2.default.Component);
+	}(_react.Component);
 
 	function mapStateToProps(state) {
 	  return {
-	    life: state.life
+	    life: state.life,
+	    generation: state.generation
 	  };
 	}
 
@@ -19902,108 +19926,61 @@
 
 	    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-	    _this.state = {
-	      life: _this.props.generateLife(20, 20),
-	      generation: 0,
-	      cycleRunning: false,
-	      buttonMessage: "Start"
+	    _this.isThereLife = function () {
+	      var lifeArray = _this.props.life;
+	      var lifeStatus = false;
+	      for (var i = 0; i < lifeArray.length; i++) {
+	        for (var j = 0; j < lifeArray[i].length; j++) {
+	          if (lifeArray[i][j] === 1) {
+	            lifeStatus = true;
+	          }
+	        }
+	      }
+	      return lifeStatus;
 	    };
-	    console.log(_this.props);
-	    console.log(_this.state);
-	    _this.iterateCells = _this.iterateCells.bind(_this);
-	    _this.checkNeighbors = _this.checkNeighbors.bind(_this);
-	    _this.toggleCycle = _this.toggleCycle.bind(_this);
-	    _this.clearBoard = _this.clearBoard.bind(_this);
-	    return _this;
-	  }
 
-	  _createClass(Game, [{
-	    key: 'toggleCycle',
-	    value: function toggleCycle() {
-	      if (this.state.cycleRunning === false) {
-	        var intervalId = setInterval(this.iterateCells, 300);
-	        this.setState({
+	    _this.toggleCycle = function () {
+	      if (_this.state.cycleRunning === false) {
+	        var intervalId = setInterval(_this.stepForward, 300);
+	        _this.setState({
 	          intervalId: intervalId,
 	          buttonMessage: "Stop"
 	        });
 	      } else {
+	        clearInterval(_this.state.intervalId);
+	        _this.setState({ buttonMessage: "Start" });
+	      }
+	      _this.setState({ cycleRunning: !_this.state.cycleRunning });
+	    };
+
+	    _this.state = {
+	      cycleRunning: false,
+	      buttonMessage: "Start"
+	    };
+
+	    _this.stepForward = _this.stepForward.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(Game, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps() {
+	      if (!this.isThereLife()) {
 	        clearInterval(this.state.intervalId);
-	        this.setState({ buttonMessage: "Start" });
-	      }
-	      this.setState({ cycleRunning: !this.state.cycleRunning });
-	    }
-	  }, {
-	    key: 'checkNeighbors',
-	    value: function checkNeighbors(cellX, cellY) {
-	      var that = this;
-	      var acc = 0;
-	      var coordinates = [[-1, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1]];
-	      var neighbors = coordinates.forEach(function (coords) {
-	        var neighborX = cellX + coords[0];
-	        var neighborY = cellY + coords[1];
-	        if (neighborX >= 0 && neighborY >= 0 && neighborY < that.state.life.length) {
-	          var neighborCoord = that.state.life[neighborY][neighborX];
-	          if (neighborCoord !== 'undefined' && neighborCoord === 1) {
-	            acc++;
-	          }
-	        }
-	      });
-	      return acc;
-	    }
-	  }, {
-	    key: 'iterateCells',
-	    value: function iterateCells() {
-	      var boardArray = this.state.life.slice();
-	      var isThereLife = "no";
-	      for (var i = 0; i < boardArray.length; i++) {
-	        for (var j = 0; j < boardArray[i].length; j++) {
-	          var amtNeighbors = this.checkNeighbors(j, i);
-	          if (boardArray[i][j] === 0 && amtNeighbors === 3) {
-	            boardArray[i][j] = 1;
-	            isThereLife = "yes";
-	          } else if (boardArray[i][j] === 1 && (amtNeighbors < 2 || amtNeighbors > 3)) {
-	            boardArray[i][j] = 0;
-	          }
-	        }
-	      }
-	      this.setState({
-	        life: boardArray,
-	        generation: ++this.state.generation
-	      });
-	      if (isThereLife === "no") {
-	        this.toggleCycle();
-	      }
-	    }
-	  }, {
-	    key: 'changeSquare',
-	    value: function changeSquare(target) {
-	      var id = target.getAttribute('data-reactid').split(".");
-	      var row = id[3].substring(1);
-	      var index = id[4].substring(1);
-	      var boardArray = this.state.life.slice();
-	      boardArray[row][index] === 1 ? boardArray[row][index] = 0 : boardArray[row][index] = 1;
-	      this.setState({ life: boardArray });
-	    }
-	  }, {
-	    key: 'clearBoard',
-	    value: function clearBoard() {
-	      var boardArray = [];
-	      for (var i = 0; i < this.state.life.length; i++) {
-	        var row = this.state.life[i].map(function () {
-	          return 0;
+	        this.setState({
+	          buttonMessage: "Start",
+	          cycleRunning: false
 	        });
-	        boardArray.push(row);
 	      }
-	      this.setState({ life: boardArray });
-	      this.toggleCycle();
 	    }
+
+	    //This function could likely stay in component state
+
 	  }, {
-	    key: 'updateGrid',
-	    value: function updateGrid(row, column) {
-	      var life = this.props.generateLife(row, column);
-	      this.setState({
-	        life: life
-	      });
+	    key: 'stepForward',
+	    value: function stepForward() {
+	      this.props.cycleLife();
+	      this.props.addGen();
 	    }
 	  }, {
 	    key: 'render',
@@ -20018,10 +19995,10 @@
 	          'h4',
 	          null,
 	          'Generation: ',
-	          this.state.generation
+	          this.props.generation
 	        ),
 	        _react2.default.createElement(_Board2.default, { life: this.props.life, handleClick: function handleClick(target) {
-	            return _this2.changeSquare(target);
+	            return _this2.props.changeSquare(target);
 	          } }),
 	        _react2.default.createElement(
 	          'p',
@@ -20034,10 +20011,11 @@
 	        ),
 	        _react2.default.createElement(_StartButton2.default, {
 	          startMessage: this.state.buttonMessage,
+	          disabled: !this.isThereLife(),
 	          handleStartClick: this.toggleCycle,
-	          handleClearClick: this.clearBoard }),
+	          handleClearClick: this.props.clearBoard }),
 	        _react2.default.createElement(_GridButtons2.default, { handleSubmit: function handleSubmit(row, column) {
-	            return _this2.updateGrid(row, column);
+	            return _this2.props.updateGrid(row, column);
 	          } })
 	      );
 	    }
@@ -20069,19 +20047,30 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Board = function Board(props) {
+	  function mapLife(life) {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'grid' },
+	      life.map(function (array) {
+	        index++;
+	        return _react2.default.createElement(_Row2.default, {
+	          handleClick: function handleClick(target) {
+	            return props.handleClick(target);
+	          },
+	          key: index.toString(),
+	          rowData: array });
+	      })
+	    );
+	  };
 	  var index = -1;
 	  return _react2.default.createElement(
 	    'div',
-	    { className: 'grid' },
-	    props.life.map(function (array) {
-	      index++;
-	      return _react2.default.createElement(_Row2.default, {
-	        handleClick: function handleClick(target) {
-	          return props.handleClick(target);
-	        },
-	        key: index.toString(),
-	        rowData: array });
-	    })
+	    null,
+	    props.life === [] ? _react2.default.createElement(
+	      'p',
+	      null,
+	      'Loading'
+	    ) : mapLife(props.life)
 	  );
 	};
 
@@ -20147,26 +20136,15 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Square = function Square(props) {
-	  function createSquare() {
-	    if (props.val === 0) {
-	      return _react2.default.createElement('div', {
-	        className: 'grid-square dead',
-	        onClick: function onClick(event) {
-	          return props.handleClick(event.target);
-	        } });
-	    } else {
-	      return _react2.default.createElement('div', {
-	        className: 'grid-square live',
-	        onClick: function onClick(event) {
-	          return props.handleClick(event.target);
-	        } });
-	    }
-	  }
-
+	  2;
 	  return _react2.default.createElement(
 	    'span',
 	    null,
-	    createSquare()
+	    _react2.default.createElement('div', {
+	      className: props.val ? "grid-square live" : "grid-square dead",
+	      onClick: function onClick(event) {
+	        return props.handleClick(event.target);
+	      } })
 	  );
 	};
 
@@ -20370,6 +20348,7 @@
 	    _react2.default.createElement(
 	      "button",
 	      {
+	        disabled: props.disabled,
 	        className: "btn btn-success btn-large",
 	        onClick: props.handleStartClick },
 	      props.startMessage
@@ -23548,21 +23527,62 @@
 	  value: true
 	});
 	exports.generateLife = generateLife;
-	var SET_BOARD = exports.SET_BOARD = 'set_board';
+	exports.updateLife = updateLife;
+	exports.changeSquare = changeSquare;
+	exports.cycleLife = cycleLife;
+	exports.clearBoard = clearBoard;
+	exports.addGen = addGen;
+	var RESET_LIFE = exports.RESET_LIFE = 'reset_life';
+	var CHANGE_SQUARE = exports.CHANGE_SQUARE = 'change_square';
+	var CYCLE_LIFE = exports.CYCLE_LIFE = 'cycle_life';
+	var CLEAR_BOARD = exports.CLEAR_BOARD = 'clear_board';
+	var ADD_GEN = exports.ADD_GEN = 'add_gen';
 
-	function generateLife() {
+	function generateLife(rows, columns) {
 	  var life = [];
-	  for (var i = 0; i < 10; i++) {
+	  for (var i = 0; i < columns; i++) {
 	    var row = [];
-	    for (var j = 0; j < 10; j++) {
+	    for (var j = 0; j < rows; j++) {
 	      var val = Math.round(Math.random());
 	      row.push(val);
 	    }
 	    life.push(row);
 	  }
 	  return {
-	    type: SET_BOARD,
+	    type: RESET_LIFE,
 	    payload: life
+	  };
+	}
+
+	function updateLife(lifeArray) {
+	  return {
+	    type: SET_LIFE,
+	    payload: lifeArray
+	  };
+	}
+
+	function changeSquare(target) {
+	  return {
+	    type: CHANGE_SQUARE,
+	    payload: target
+	  };
+	}
+
+	function cycleLife() {
+	  return {
+	    type: CYCLE_LIFE
+	  };
+	}
+
+	function clearBoard() {
+	  return {
+	    type: CLEAR_BOARD
+	  };
+	}
+
+	function addGen() {
+	  return {
+	    type: ADD_GEN
 	  };
 	}
 
@@ -23615,13 +23635,18 @@
 
 	var _lifeReducer2 = _interopRequireDefault(_lifeReducer);
 
+	var _genReducer = __webpack_require__(217);
+
+	var _genReducer2 = _interopRequireDefault(_genReducer);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var rootReducer = (0, _redux.combineReducers)({
-	  life: _lifeReducer2.default
+	  life: _lifeReducer2.default,
+	  generation: _genReducer2.default
 	});
 
-	exports.default = _lifeReducer2.default;
+	exports.default = rootReducer;
 
 /***/ }),
 /* 216 */
@@ -23634,12 +23659,94 @@
 	});
 
 	exports.default = function () {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case _actions.SET_BOARD:
+	    case _actions.RESET_LIFE:
 	      return action.payload;
+	    case _actions.CHANGE_SQUARE:
+	      return changeSquare(state, action.payload);
+	    case _actions.CYCLE_LIFE:
+	      return cycleLife(state);
+	    case _actions.CLEAR_BOARD:
+	      return clearBoard(state);
+	    default:
+	      return state;
+	  }
+	};
+
+	var _actions = __webpack_require__(213);
+
+	function changeSquare(state, target) {
+	  var id = target.getAttribute('data-reactid').split(".");
+	  var row = id[5].substring(1);
+	  var index = id[6].substring(1);
+	  var lifeArray = state.slice();
+	  lifeArray[row][index] === 1 ? lifeArray[row][index] = 0 : lifeArray[row][index] = 1;
+	  return lifeArray;
+	}
+
+	function cycleLife(state) {
+	  var lifeArray = state.slice();
+	  for (var i = 0; i < lifeArray.length; i++) {
+	    for (var j = 0; j < lifeArray[i].length; j++) {
+	      var amtNeighbors = checkNeighbors(state, j, i);
+	      if (lifeArray[i][j] === 0 && amtNeighbors === 3) {
+	        lifeArray[i][j] = 1;
+	      } else if (lifeArray[i][j] === 1 && (amtNeighbors < 2 || amtNeighbors > 3)) {
+	        lifeArray[i][j] = 0;
+	      }
+	    }
+	  }
+	  //Need to figure out a way to increase the generation and to toggle the cycle to turn off when there is no life
+	  return lifeArray;
+	}
+
+	function checkNeighbors(state, cellX, cellY) {
+	  var acc = 0;
+	  var coordinates = [[-1, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1]];
+	  var neighbors = coordinates.forEach(function (coords) {
+	    var neighborX = cellX + coords[0];
+	    var neighborY = cellY + coords[1];
+	    if (neighborX >= 0 && neighborY >= 0 && neighborY < state.length) {
+	      var neighborCoord = state[neighborY][neighborX];
+	      if (neighborCoord !== 'undefined' && neighborCoord === 1) {
+	        acc++;
+	      }
+	    }
+	  });
+	  return acc;
+	}
+
+	function clearBoard(state) {
+	  var lifeArray = [];
+	  for (var i = 0; i < state.length; i++) {
+	    var row = state[i].map(function () {
+	      return 0;
+	    });
+	    lifeArray.push(row);
+	  }
+	  return lifeArray;
+	}
+
+/***/ }),
+/* 217 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function () {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case _actions.ADD_GEN:
+	      return state + 1;
 	    default:
 	      return state;
 	  }

@@ -4,6 +4,7 @@ const StartButton = (props) => {
   return(
   <div>
     <button
+      disabled={props.disabled}
       className="btn btn-success btn-large"
       onClick={props.handleStartClick}>
       {props.startMessage}

@@ -11,23 +11,40 @@ class Game extends Component {
     super(props)
 
     this.state = {
-      life: this.props.generateLife(20, 20),
-      generation: 0,
       cycleRunning: false,
       buttonMessage: "Start"
     }
-    console.log(this.props);
-    console.log(this.state);
-    this.iterateCells = this.iterateCells.bind(this);
-    this.checkNeighbors = this.checkNeighbors.bind(this);
-    this.toggleCycle = this.toggleCycle.bind(this);
-    this.clearBoard = this.clearBoard.bind(this);
+
+    this.stepForward = this.stepForward.bind(this);
   }
 
+  componentWillReceiveProps() {
+    if(!this.isThereLife()) {
+      clearInterval(this.state.intervalId);
+      this.setState({
+        buttonMessage: "Start",
+        cycleRunning: false
+       })
+    }
+  }
 
-  toggleCycle () {
+  isThereLife = () => {
+    let lifeArray = this.props.life;
+    let lifeStatus = false;
+    for (let i = 0; i < lifeArray.length; i++) {
+      for (let j = 0; j < lifeArray[i].length; j++) {
+        if (lifeArray[i][j] === 1) {
+          lifeStatus = true;
+        }
+      }
+    }
+    return lifeStatus;
+  }
+
+  //This function could likely stay in component state
+  toggleCycle = () => {
     if (this.state.cycleRunning === false) {
-      var intervalId = setInterval(this.iterateCells, 300);
+      var intervalId = setInterval(this.stepForward, 300);
       this.setState({
         intervalId: intervalId,
         buttonMessage: "Stop"
@@ -39,84 +56,24 @@ class Game extends Component {
     this.setState({ cycleRunning: !this.state.cycleRunning });
   }
 
-  checkNeighbors (cellX, cellY) {
-    var that = this;
-    var acc = 0;
-    var coordinates = [[-1, 0], [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1]];
-    var neighbors = coordinates.forEach(function(coords) {
-      var neighborX = cellX + coords[0];
-      var neighborY = cellY + coords[1];
-      if (neighborX >= 0 && neighborY >=0 && neighborY < that.state.life.length) {
-        var neighborCoord = that.state.life[neighborY][neighborX];
-        if (neighborCoord !== 'undefined' && neighborCoord === 1) {
-          acc++;
-        }
-      }
-    });
-    return acc;
-  }
-
-  iterateCells () {
-    let boardArray = this.state.life.slice();
-    let isThereLife = "no";
-    for (let i = 0; i < boardArray.length; i++) {
-      for (let j = 0; j < boardArray[i].length; j++) {
-        let amtNeighbors = this.checkNeighbors(j, i);
-        if (boardArray[i][j] === 0 && amtNeighbors === 3) {
-          boardArray[i][j] = 1;
-          isThereLife = "yes";
-        } else if (boardArray[i][j] === 1 && (amtNeighbors < 2 || amtNeighbors > 3)) {
-          boardArray[i][j] = 0;
-        }
-      }
-    }
-    this.setState({
-      life: boardArray,
-      generation: ++this.state.generation
-      });
-      if (isThereLife === "no") {
-        this.toggleCycle();
-      }
-  }
-
-  changeSquare (target) {
-    var id = target.getAttribute('data-reactid').split(".");
-    var row = id[3].substring(1);
-    var index = id[4].substring(1);
-    let boardArray = this.state.life.slice();
-    boardArray[row][index] === 1 ? boardArray[row][index] = 0 : boardArray[row][index] = 1;
-    this.setState({ life: boardArray});
-  }
-
-  clearBoard () {
-    let boardArray = [];
-    for (let i = 0; i < this.state.life.length; i++) {
-      let row = this.state.life[i].map(() => { return 0 });
-      boardArray.push(row);
-    }
-      this.setState({ life: boardArray });
-      this.toggleCycle();
-  }
-
-  updateGrid (row, column) {
-      let life = this.props.generateLife(row, column);
-      this.setState({
-        life: life
-       });
+  stepForward() {
+    this.props.cycleLife();
+    this.props.addGen();
   }
 
   render () {
     return (
       <div className="container text-center">
         <Info />
-        <h4>Generation: {this.state.generation}</h4>
-        <Board life={this.props.life} handleClick={(target) => this.changeSquare(target)}/>
+        <h4>Generation: {this.props.generation}</h4>
+        <Board life={this.props.life} handleClick={(target) => this.props.changeSquare(target)}/>
         <p><strong>Click on a cell to change it's state!</strong></p>
         <StartButton
           startMessage={this.state.buttonMessage}
+          disabled={!this.isThereLife()}
           handleStartClick={this.toggleCycle}
-          handleClearClick={this.clearBoard}/>
-        <GridButtons handleSubmit={(row, column) => this.updateGrid(row, column)}/>
+          handleClearClick={this.props.clearBoard}/>
+        <GridButtons handleSubmit={(row, column) => this.props.updateGrid(row, column)}/>
       </div>
     );
   }
