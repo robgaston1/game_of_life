@@ -19835,9 +19835,6 @@
 	        _react2.default.createElement(_Game2.default, {
 	          life: this.props.life,
 	          generation: this.props.generation,
-	          updateLife: function updateLife(lifeArray) {
-	            return _this2.props.actions.updateLife(lifeArray);
-	          },
 	          changeSquare: function changeSquare(target) {
 	            return _this2.props.actions.changeSquare(target);
 	          },
@@ -19953,12 +19950,15 @@
 	      _this.setState({ cycleRunning: !_this.state.cycleRunning });
 	    };
 
+	    _this.stepForward = function () {
+	      _this.props.cycleLife();
+	      _this.props.addGen();
+	    };
+
 	    _this.state = {
 	      cycleRunning: false,
 	      buttonMessage: "Start"
 	    };
-
-	    _this.stepForward = _this.stepForward.bind(_this);
 	    return _this;
 	  }
 
@@ -19972,15 +19972,6 @@
 	          cycleRunning: false
 	        });
 	      }
-	    }
-
-	    //This function could likely stay in component state
-
-	  }, {
-	    key: 'stepForward',
-	    value: function stepForward() {
-	      this.props.cycleLife();
-	      this.props.addGen();
 	    }
 	  }, {
 	    key: 'render',
@@ -23527,7 +23518,6 @@
 	  value: true
 	});
 	exports.generateLife = generateLife;
-	exports.updateLife = updateLife;
 	exports.changeSquare = changeSquare;
 	exports.cycleLife = cycleLife;
 	exports.clearBoard = clearBoard;
@@ -23551,13 +23541,6 @@
 	  return {
 	    type: RESET_LIFE,
 	    payload: life
-	  };
-	}
-
-	function updateLife(lifeArray) {
-	  return {
-	    type: SET_LIFE,
-	    payload: lifeArray
 	  };
 	}
 
@@ -23699,7 +23682,6 @@
 	      }
 	    }
 	  }
-	  //Need to figure out a way to increase the generation and to toggle the cycle to turn off when there is no life
 	  return lifeArray;
 	}
 

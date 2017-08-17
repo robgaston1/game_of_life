@@ -39,7 +39,6 @@ function cycleLife (state) {
       }
     }
   }
-  //Need to figure out a way to increase the generation and to toggle the cycle to turn off when there is no life
   return lifeArray;
 }
 

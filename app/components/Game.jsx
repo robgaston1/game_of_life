@@ -14,8 +14,6 @@ class Game extends Component {
       cycleRunning: false,
       buttonMessage: "Start"
     }
-
-    this.stepForward = this.stepForward.bind(this);
   }
 
   componentWillReceiveProps() {
@@ -41,7 +39,6 @@ class Game extends Component {
     return lifeStatus;
   }
 
-  //This function could likely stay in component state
   toggleCycle = () => {
     if (this.state.cycleRunning === false) {
       var intervalId = setInterval(this.stepForward, 300);
@@ -56,7 +53,7 @@ class Game extends Component {
     this.setState({ cycleRunning: !this.state.cycleRunning });
   }
 
-  stepForward() {
+  stepForward = () => {
     this.props.cycleLife();
     this.props.addGen();
   }

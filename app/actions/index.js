@@ -20,13 +20,6 @@ export function generateLife (rows, columns) {
   };
 }
 
-export function updateLife(lifeArray) {
-  return {
-    type: SET_LIFE,
-    payload: lifeArray
-  }
-}
-
 export function changeSquare(target) {
   return {
     type: CHANGE_SQUARE,

@@ -16,7 +16,6 @@ class App extends Component {
         <Game
           life = { this.props.life }
           generation = { this.props.generation }
-          updateLife = {(lifeArray) => this.props.actions.updateLife(lifeArray)}
           changeSquare = {(target)=>this.props.actions.changeSquare(target)}
           cycleLife = {() => this.props.actions.cycleLife()}
           addGen = {() => this.props.actions.addGen()}
