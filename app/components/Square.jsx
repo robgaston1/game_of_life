@@ -2,22 +2,13 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
 
-const Square = (props) => {
-  function createSquare () {
-    if (props.val === 0) {
-      return <div
-              className="grid-square dead"
-              onClick={(event) => props.handleClick(event.target)}></div>;
-    } else {
-      return <div
-              className="grid-square live"
-              onClick={(event) => props.handleClick(event.target)}></div>;
-    }
-  }
-
+const Square = (props) => {2
   return (
     <span>
-    {createSquare()}
+      <div
+        className={(props.val) ? "grid-square live" : "grid-square dead"}
+        onClick={(event) => props.handleClick(event.target)}>
+      </div>
     </span>
   )
 }
